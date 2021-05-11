@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./hongik_artcenter/js/jquery-1.12.4.js"></script>
+    <style>
+        .main_banner_box{
+            margin: 100px auto;
+            width: 400px;
+            height: 400px;
+            position: relative;
+            border: 1px solid;
+        }
+        .banner{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 100%;
+            font-size: 100px;
+            color: #fff;
+        }
+        .banner:nth-child(1){background-color: red;}
+        .banner:nth-child(2){background-color: green;}
+        .banner:nth-child(3){background-color: blue;}
+        
+        .main_banner_box:hover .banner:nth-child(1){background-color: rgb(255, 75, 75);}
+        .main_banner_box:hover .banner:nth-child(2){background-color: rgb(92, 209, 92);}
+        .main_banner_box:hover .banner:nth-child(3){background-color: rgb(115, 115, 255);}
+
+        .indicator{
+            z-index: 99;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        .indi{
+            display: inline-block;
+            margin: 0 5px;
+            width: 30px;
+            height: 30px;
+            background-color: #000;
+            transition: all 0.5s;
+        }
+        .indi_active{
+            background-color: #fff;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function(){
+            
+            let banner = $('.banner');
+            let timer = 500;
+            let banner_index = 1;
+            let banner_count = banner.length;
+            let interval
+            let main_banner_box = $('.main_banner_box');
+
+            for( let i = 0; i < banner_count; i++){
+                $('.indicator').append('<div class="indi"></div>')
+            }
+
+            let indi = $('.indi')
+            indi.eq(0).addClass('indi_active')
+            banner.eq(0).css({left:0})
+
+            function slide(){
+                interval = setInterval(function(){
+                banner.eq(banner_index % banner_count).css({
+                    left : '100%'
+                }).animate({
+                    left : '0'
+                },timer)
+                banner.eq((banner_index-1) % banner_count).animate({
+                    left : '-100%'
+                },timer)
+                indi.removeClass('indi_active')
+                indi.eq((banner_index) % banner_count).addClass('indi_active')
+                banner_index++
+            }, timer * 2);
+            }
+
+            main_banner_box.hover(function(){
+                clearInterval(interval)
+            }, function(){
+                slide()
+            })
+            
+            indi.click(function(){
+                if($('.indi_active').index() > $(this).index()){
+                    banner.eq(($(this).index())).css({
+                        left:'-100%'
+                    }).animate({
+                        left:0
+                    },timer);
+                    banner.eq($('.indi_active').index()).animate({
+                        left:'100%'
+                    },timer)
+                    indi.removeClass('indi_active')       
+                    indi.eq($(this).index()).addClass('indi_active')
+                    }
+                else{
+                    banner.eq(($(this).index())).css({
+                        left:'100%'
+                    }).animate({
+                        left:0
+                    },timer);
+                    banner.eq($('.indi_active').index()).animate({
+                        left:'-100%'
+                    },timer)
+                    indi.removeClass('indi_active')       
+                    indi.eq($(this).index()).addClass('indi_active')
+                }
+                banner_index = $(this).index()+1; 
+            })
+            slide();
+        })
+    </script>
+</head>
+<body>
+    
+    <div class="main_banner_box">
+        <div class="banner">1</div>
+        <div class="banner">2</div>
+        <div class="banner">3</div>
+
+        <div class="indicator"></div>
+    </div>
+    
+</body>
+</html>
